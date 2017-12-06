@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import TodoList from 'TodoList';
 
+import AddTodo from 'AddTodo';
+
 class TodoApp extends Component {
   state = {
     todos: [
@@ -24,12 +26,19 @@ class TodoApp extends Component {
     ]
   }
 
+  handleAddTodo = (text) => {
+    const todos = this.state.todos;
+    todos.push({ id: todos.length + 2, text });
+    this.setState({ todos });
+  }
+
   render() {
     const { todos } = this.state;
     return (
       <div>
         <h1>Todo app</h1>
         <TodoList todos={todos} />
+        <AddTodo onAddTodo={this.handleAddTodo}/>
       </div>
     )
   }
