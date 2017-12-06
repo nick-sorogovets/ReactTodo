@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import uuid from 'node-uuid';
 
 import TodoSeach from 'TodoSearch';
 import TodoList from 'TodoList';
@@ -11,28 +12,34 @@ class TodoApp extends Component {
     searchText: '',
     todos: [
       {
-        id: 1,
+        id: uuid(),
         text: 'Walk the dog'
       },
       {
-        id: 2,
+        id: uuid(),
         text: 'Crean the yard'
       },
       {
-        id: 3,
+        id: uuid(),
         text: 'Learn React/Redux'
       },
       {
-        id: 4,
+        id: uuid(),
         text: 'Be healthy'
       }
     ]
   }
 
   handleAddTodo = (text) => {
-    const todos = this.state.todos;
-    todos.push({ id: todos.length + 2, text });
-    this.setState({ todos });
+    this.setState({
+      todos: [
+        ...this.state.todos,
+        {
+          id: uuid(),
+          text
+        }
+      ]
+    });
   }
 
   handleSearch = (showCompleted, searchText) => {
@@ -47,9 +54,9 @@ class TodoApp extends Component {
     return (
       <div>
         <h1>Todo app</h1>
-        <TodoSeach onSearch={this.handleSearch}/>
+        <TodoSeach onSearch={this.handleSearch} />
         <TodoList todos={todos} />
-        <AddTodo onAddTodo={this.handleAddTodo}/>
+        <AddTodo onAddTodo={this.handleAddTodo} />
       </div>
     )
   }
