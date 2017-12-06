@@ -1,13 +1,38 @@
-var React = require('react');
+import React, { Component } from 'react';
 
-var TodoApp = React.createClass({
-  render: function () {
+import TodoList from 'TodoList';
+
+class TodoApp extends Component {
+  state = {
+    todos: [
+      {
+        id: 1,
+        text: 'Walk the dog'
+      },
+      {
+        id: 2,
+        text: 'Crean the yard'
+      },
+      {
+        id: 3,
+        text: 'Learn React/Redux'
+      },
+      {
+        id: 4,
+        text: 'Be healthy'
+      }
+    ]
+  }
+
+  render() {
+    const { todos } = this.state;
     return (
       <div>
-        TodoApp.jsx
+        <h1>Todo app</h1>
+        <TodoList todos={todos} />
       </div>
     )
   }
-});
+}
 
-module.exports = TodoApp;
+export default TodoApp;
