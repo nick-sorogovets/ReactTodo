@@ -20,16 +20,12 @@ describe('Todo', () => {
 
     const spy = expect.createSpy();
 
-    const todo = TestUtils.renderIntoDocument(<Todo {...todoData} onToggle={spy}/>);
+    const todo = TestUtils.renderIntoDocument(<Todo {...todoData} onToggle={spy} />);
 
     const $el = $(ReactDOM.findDOMNode(todo));
 
     TestUtils.Simulate.click($el[0]);
 
     expect(spy).toHaveBeenCalledWith(11);
-
-    
-
-
   });
 });
