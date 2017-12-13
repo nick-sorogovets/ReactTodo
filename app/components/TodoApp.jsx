@@ -4,6 +4,7 @@ import uuid from 'node-uuid';
 import TodoSeach from 'TodoSearch';
 import TodoList from 'TodoList';
 import AddTodo from 'AddTodo';
+import { fail } from 'assert';
 
 
 class TodoApp extends Component {
@@ -13,19 +14,23 @@ class TodoApp extends Component {
     todos: [
       {
         id: uuid(),
-        text: 'Walk the dog'
+        text: 'Walk the dog',
+        completed: false,
       },
       {
         id: uuid(),
-        text: 'Crean the yard'
+        text: 'Crean the yard',
+        completed: true,
       },
       {
         id: uuid(),
-        text: 'Learn React/Redux'
+        text: 'Learn React/Redux',
+        completed: false,
       },
       {
         id: uuid(),
-        text: 'Be healthy'
+        text: 'Be healthy',
+        completed: true,
       }
     ]
   }
@@ -36,7 +41,8 @@ class TodoApp extends Component {
         ...this.state.todos,
         {
           id: uuid(),
-          text
+          text,
+          completed: false,
         }
       ]
     });
@@ -49,13 +55,25 @@ class TodoApp extends Component {
     });
   }
 
+  handleToggle = (id) => {
+    const todos = this.state.todos.map((todo) => {
+      if(todo.id === id) {
+        todo.completed = !todo.completed
+      }
+      return todo;
+    });
+   
+    this.setState({ todos });
+  }
+
+
   render() {
     const { todos } = this.state;
     return (
       <div>
         <h1>Todo app</h1>
         <TodoSeach onSearch={this.handleSearch} />
-        <TodoList todos={todos} />
+        <TodoList todos={todos} onToggle={this.handleToggle} />
         <AddTodo onAddTodo={this.handleAddTodo} />
       </div>
     )
