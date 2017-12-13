@@ -94,7 +94,7 @@ describe('TodoAPI', () => {
     });
 
     it('should filter by search text', () => {
-      const filteredTodos = TodoAPI.filterTodos(todos, true, 'some');
+      const filteredTodos = TodoAPI.filterTodos(todos, true, 'SoMe');
 
       expect(filteredTodos.length).toBe(2);
     });

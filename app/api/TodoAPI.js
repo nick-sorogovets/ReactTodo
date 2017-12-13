@@ -25,7 +25,7 @@ export default {
     
     if(searchText.length) {
       filteredTodos = filteredTodos.filter(todo =>
-        todo.text.toLowerCase().indexOf(searchText) > -1
+        todo.text.toLowerCase().indexOf(searchText.toLowerCase()) > -1
       );
     }
 
