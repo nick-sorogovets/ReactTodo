@@ -6,33 +6,17 @@ import TodoList from 'TodoList';
 import AddTodo from 'AddTodo';
 import { fail } from 'assert';
 
+import TodoAPI from 'TodoAPI'
 
 class TodoApp extends Component {
   state = {
     showCompleted: false,
     searchText: '',
-    todos: [
-      {
-        id: uuid(),
-        text: 'Walk the dog',
-        completed: false,
-      },
-      {
-        id: uuid(),
-        text: 'Crean the yard',
-        completed: true,
-      },
-      {
-        id: uuid(),
-        text: 'Learn React/Redux',
-        completed: false,
-      },
-      {
-        id: uuid(),
-        text: 'Be healthy',
-        completed: true,
-      }
-    ]
+    todos: TodoAPI.getTodos()
+  }
+
+  componentDidUpdate() {
+    TodoAPI.setTodos(this.state.todos);
   }
 
   handleAddTodo = (text) => {
