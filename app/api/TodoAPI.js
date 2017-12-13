@@ -16,5 +16,30 @@ export default {
     }
 
     return Array.isArray(todos) ? todos : [];
-  }
+  },
+
+  filterTodos(todos, showCompleted, searchText) {
+    let filteredTodos = todos;
+
+    filteredTodos = filteredTodos.filter(todo => !todo.completed  || showCompleted);
+    
+    if(searchText.length) {
+      filteredTodos = filteredTodos.filter(todo =>
+        todo.text.toLowerCase().indexOf(searchText) > -1
+      );
+    }
+
+    filteredTodos.sort((a, b) => {
+      if(!a.completed && b.completed) {
+      return -1;
+      } else if(a.completed && !b.completed) {
+        return 1;
+      } else {
+        return 0;
+      }
+
+    })
+
+    return filteredTodos;
+  },
 };
