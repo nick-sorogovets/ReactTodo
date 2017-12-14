@@ -5,10 +5,16 @@ import Todo from 'Todo';
 class TodoList extends Component {
   render() {
     const { todos } = this.props;
-    const renderTodos = () =>
-     todos.map((todo) =>
-      <Todo key={todo.id} {...todo } onToggle={this.props.onToggle}/>);
+    const renderTodos = () => {
+      if(todos.length === 0) {
+        return (
+          <p className="container__message">Nothing To Do</p>
+        );
+      }
 
+     return todos.map((todo) =>
+      <Todo key={todo.id} {...todo } onToggle={this.props.onToggle}/>);
+    }
     return (
       <div>
         {renderTodos()}

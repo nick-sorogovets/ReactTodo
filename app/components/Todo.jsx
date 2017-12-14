@@ -4,6 +4,7 @@ import moment from 'moment';
 class Todo extends Component {
   render() {
     const { text, id, completed, createdAt, completedAt } = this.props;
+    const todoClassName = completed ? 'todo todo-completed' : 'todo';
     const renderDate = () => {
       let message = 'Created ';
       let timestamp = createdAt;
@@ -17,10 +18,14 @@ class Todo extends Component {
     };
 
     return (
-      <div onClick={() => { this.props.onToggle(id); }}>
+      <div className={todoClassName} onClick={() => {
+        this.props.onToggle(id);
+      }}>
         <input type="checkbox" checked={completed} />
-        <p>{text}</p>
-        <p>{renderDate()}</p>
+        <div >
+          <p>{text}</p>
+          <p className="todo__subtext">{renderDate()}</p>
+        </div>
       </div>
     );
   }
