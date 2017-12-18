@@ -2,6 +2,8 @@ const redux = require('redux');
 
 import uuid from 'node-uuid';
 import moment from 'moment';
+import axios from 'axios';
+
 console.log('Starting todo redux example');
 
 
@@ -58,9 +60,53 @@ const removeTodo = (id) => {
   }
 };
 
+// Map reducers and action generators
+
+const mapReducer = ( state = { isFething: false, url: undefined }, action) => {
+  switch(action.type) {
+    case 'START_LOCATION_FETCH':
+      return {
+        isFething: true,
+        url: undefined
+      };
+    case 'COMPLETE_LOCATION_FETCH': 
+      return {
+        isFething: false,
+        url: action.url
+      };
+    default:
+      return state; 
+  }
+}
+
+const startLocationFetch = () => {
+  return {
+    type: 'START_LOCATION_FETCH'
+  };
+}
+
+const completeLocationFetch = (url) => {
+  return {
+    type: 'COMPLETE_LOCATION_FETCH',
+    url
+  };
+}
+
+const fetchLocation = () => {
+  store.dispatch(startLocationFetch());
+
+  axios.get('http://ipinfo.io').then((response) => {
+    const loc = response.data.loc;
+    const baseUrl = `http://maps.google.com?q=${loc}`;
+
+    store.dispatch(completeLocationFetch(baseUrl));
+  })
+}
+
 const reducer = redux.combineReducers({
   searchText: searchReducer,
   todos: todosReducer,
+  map: mapReducer,
 })
 
 const store = redux.createStore(reducer, redux.compose(
@@ -73,10 +119,18 @@ const unsubscribe = store.subscribe(() => {
 
   document.getElementById('app').innerHTML = state.searchText;
   console.log('State', state);
+
+  if(state.map.isFething) {
+    document.getElementById('app').innerHTML = 'Loading...';
+  } else if (state.map.url) {
+    document.getElementById('app').innerHTML = `<a target="_blank" href="${state.map.url}">View Your location</a>`;
+  }
 });
 // unsubscribe();
 
 console.log('currentState', store.getState());
+
+fetchLocation();
 
 store.dispatch(changeSearchText('work'));
 
