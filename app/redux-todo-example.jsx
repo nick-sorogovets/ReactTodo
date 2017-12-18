@@ -4,44 +4,8 @@ import uuid from 'node-uuid';
 import moment from 'moment';
 console.log('Starting todo redux example');
 
-let todoId = 1;
 
-const stateDefault = {
-  searchText: '',
-  showCompleted: false,
-  todos: []
-};
-const oldReducer = (state = stateDefault, action) => {
-  switch (action.type) {
-    case 'CHANGE_SEARCH_TEXT':
-      return {
-        ...state,
-        searchText: action.searchText
-      };
-    case 'ADD_TODO':
-      return {
-        ...state,
-        todos: [
-          ...state.todos,
-          {
-            id: todoId++,
-            text: action.text,
-            completed: false,
-            createdAt: moment().unix(),
-            completedAt: undefined
-          }
-        ]
-      };
-    case 'REMOVE_TODO':
-      return {
-        ...state,
-        todos: state.todos.filter((todo) => todo.id !== action.id)
-      }  
-    default:
-      return state;
-  }
-};
-
+// Search reducers and action generators
 const searchReducer = (state = '', action) => {
   switch (action.type) {
     case 'CHANGE_SEARCH_TEXT':
@@ -51,25 +15,48 @@ const searchReducer = (state = '', action) => {
   }
 }
 
+const changeSearchText = (searchText) => {
+  return {
+    type: 'CHANGE_SEARCH_TEXT',
+    searchText
+  };
+}
+
+// Todo reducers and action generators
+let todoId = 1;
 const todosReducer = (state = [], action) => {
   switch (action.type) {
-    case 'ADD_TODO': 
-    return [
-      ...state,
-      {
-        id: todoId++,
-        text: action.text,
-        completed: false,
-        createdAt: moment().unix(),
-        completedAt: undefined
-      }
-    ];
-    case 'REMOVE_TODO': 
+    case 'ADD_TODO':
+      return [
+        ...state,
+        {
+          id: todoId++,
+          text: action.text,
+          completed: false,
+          createdAt: moment().unix(),
+          completedAt: undefined
+        }
+      ];
+    case 'REMOVE_TODO':
       return state.filter((todo) => todo.id !== action.id)
     default:
-      return state;  
+      return state;
   }
 }
+
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    text
+  };
+};
+
+const removeTodo = (id) => {
+  return {
+    type: 'REMOVE_TODO',
+    id
+  }
+};
 
 const reducer = redux.combineReducers({
   searchText: searchReducer,
@@ -91,32 +78,14 @@ const unsubscribe = store.subscribe(() => {
 
 console.log('currentState', store.getState());
 
-store.dispatch({
-  type: 'CHANGE_SEARCH_TEXT',
-  searchText: 'work'
-});
+store.dispatch(changeSearchText('work'));
 
-store.dispatch({
-  type: 'ADD_TODO',
-  text: 'Test add todo'
-})
+store.dispatch(addTodo('Test add todo'))
 
-store.dispatch({
-  type: 'ADD_TODO',
-  text: 'Test one more todo'
-});
+store.dispatch(addTodo('Test one more todo'));
 
-store.dispatch({
-  type: 'CHANGE_SEARCH_TEXT',
-  searchText: 'dog'
-});
+store.dispatch(changeSearchText('dog'));
 
-store.dispatch({
-  type: 'CHANGE_SEARCH_TEXT',
-  searchText: 'Something else'
-});
+store.dispatch(changeSearchText('Something else'));
 
-store.dispatch({
-  type: 'REMOVE_TODO',
-  id: 1
-});
+store.dispatch(removeTodo(1));
