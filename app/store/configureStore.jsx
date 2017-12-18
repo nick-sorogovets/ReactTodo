@@ -1,14 +1,18 @@
 const redux = require('redux');
 import thunk from 'redux-thunk';
 
-import { searchReducer, todosReducer, mapReducer} from '../reducers';
+import {
+  searchTextReducer,
+  showCompletedReducer,
+  todoReducer,
+  } from 'reducers';
 
 export const configure = () => {
   const reducer = redux.combineReducers({
-    searchText: searchReducer,
-    todos: todosReducer,
-    map: mapReducer,
-  })
+    searchText: searchTextReducer,
+    showCompleted: showCompletedReducer,
+    todos: todoReducer,
+  });
   
   const store = redux.createStore(reducer, redux.compose(
     redux.applyMiddleware(thunk),
