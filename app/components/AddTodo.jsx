@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-class AddTodo extends Component {
+import actions from 'actions';
+
+export class AddTodo extends Component {
   handleSubmit = (e) => {
+    const { dispatch } = this.props;
     e.preventDefault();
     const todoText = this.refs.todoText.value;
     if (todoText.length) {
       this.refs.todoText.value = '';
-      this.props.onAddTodo(todoText);
+      dispatch(actions.addTodo(todoText));
     }
   }
 
@@ -26,4 +30,4 @@ class AddTodo extends Component {
   }
 }
 
-export default AddTodo;
+export default connect()(AddTodo);

@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import expect from 'expect';
 import $ from 'jquery';
+import { Provider } from 'react-redux';
 
-import TodoList from 'TodoList';
-import Todo from 'Todo';
+import { configure } from 'configureStore';
+import ConnectedTodoList, { TodoList } from 'TodoList';
+import ConnectedTodo, { Todo } from 'Todo';
 
 describe('TodoList', () => {
   it('should exists', () => {
@@ -16,24 +18,39 @@ describe('TodoList', () => {
     const todos = [
       {
         id: 1,
-        text: 'Do something'
+        text: 'Do something',
+        completed: false,
+        completedAt: undefined,
+        createdAt: 500,
       }, {
         id: 2,
-        text: 'Check tests'
-
+        text: 'Check tests',
+        completed: false,
+        completedAt: undefined,
+        createdAt: 500,
       }
     ];
 
-    const todoList = TestUtils.renderIntoDocument(<TodoList todos={todos}/>);
-    const todoComponents = TestUtils.scryRenderedComponentsWithType(todoList,Todo);
+    const store = configure({
+      todos
+    });
 
+    const provider = TestUtils.renderIntoDocument(
+      <Provider store={store}>
+        <ConnectedTodoList />
+      </Provider>
+    );
+
+    const todoList = TestUtils.scryRenderedComponentsWithType(provider, ConnectedTodoList)[0];
+    const todoComponents = TestUtils.scryRenderedComponentsWithType(todoList, ConnectedTodo);
+    
     expect(todoComponents.length).toBe(todos.length);
   });
 
   it('should render emtpy message if no todos', () => {
     const todos = [];
 
-    const todoList = TestUtils.renderIntoDocument(<TodoList todos={todos}/>);
+    const todoList = TestUtils.renderIntoDocument(<TodoList todos={todos} />);
     const $el = $(ReactDOM.findDOMNode(todoList));
 
     expect($el.find('.container__message').length).toBe(1);
