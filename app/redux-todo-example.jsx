@@ -11,7 +11,7 @@ const stateDefault = {
   showCompleted: false,
   todos: []
 };
-const reducer = (state = stateDefault, action) => {
+const oldReducer = (state = stateDefault, action) => {
   switch (action.type) {
     case 'CHANGE_SEARCH_TEXT':
       return {
@@ -41,6 +41,41 @@ const reducer = (state = stateDefault, action) => {
       return state;
   }
 };
+
+const searchReducer = (state = '', action) => {
+  switch (action.type) {
+    case 'CHANGE_SEARCH_TEXT':
+      return action.searchText;
+    default:
+      return state;
+  }
+}
+
+const todosReducer = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_TODO': 
+    return [
+      ...state,
+      {
+        id: todoId++,
+        text: action.text,
+        completed: false,
+        createdAt: moment().unix(),
+        completedAt: undefined
+      }
+    ];
+    case 'REMOVE_TODO': 
+      return state.filter((todo) => todo.id !== action.id)
+    default:
+      return state;  
+  }
+}
+
+const reducer = redux.combineReducers({
+  searchText: searchReducer,
+  todos: todosReducer,
+})
+
 const store = redux.createStore(reducer, redux.compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
