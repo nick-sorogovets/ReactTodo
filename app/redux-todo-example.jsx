@@ -1,6 +1,10 @@
 const redux = require('redux');
 
+import uuid from 'node-uuid';
+import moment from 'moment';
 console.log('Starting todo redux example');
+
+let todoId = 1;
 
 const stateDefault = {
   searchText: '',
@@ -14,6 +18,25 @@ const reducer = (state = stateDefault, action) => {
         ...state,
         searchText: action.searchText
       };
+    case 'ADD_TODO':
+      return {
+        ...state,
+        todos: [
+          ...state.todos,
+          {
+            id: todoId++,
+            text: action.text,
+            completed: false,
+            createdAt: moment().unix(),
+            completedAt: undefined
+          }
+        ]
+      };
+    case 'REMOVE_TODO':
+      return {
+        ...state,
+        todos: state.todos.filter((todo) => todo.id !== action.id)
+      }  
     default:
       return state;
   }
@@ -27,6 +50,7 @@ const unsubscribe = store.subscribe(() => {
   var state = store.getState();
 
   document.getElementById('app').innerHTML = state.searchText;
+  console.log('State', state);
 });
 // unsubscribe();
 
@@ -38,6 +62,16 @@ store.dispatch({
 });
 
 store.dispatch({
+  type: 'ADD_TODO',
+  text: 'Test add todo'
+})
+
+store.dispatch({
+  type: 'ADD_TODO',
+  text: 'Test one more todo'
+});
+
+store.dispatch({
   type: 'CHANGE_SEARCH_TEXT',
   searchText: 'dog'
 });
@@ -45,4 +79,9 @@ store.dispatch({
 store.dispatch({
   type: 'CHANGE_SEARCH_TEXT',
   searchText: 'Something else'
-}); 
+});
+
+store.dispatch({
+  type: 'REMOVE_TODO',
+  id: 1
+});
