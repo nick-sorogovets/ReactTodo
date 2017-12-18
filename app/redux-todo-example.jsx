@@ -1,117 +1,12 @@
 const redux = require('redux');
 
-import uuid from 'node-uuid';
-import moment from 'moment';
-import axios from 'axios';
 
 console.log('Starting todo redux example');
 
+const actions = require('./actions');
+import { configure } from './store/configureStore';
 
-// Search reducers and action generators
-const searchReducer = (state = '', action) => {
-  switch (action.type) {
-    case 'CHANGE_SEARCH_TEXT':
-      return action.searchText;
-    default:
-      return state;
-  }
-}
-
-const changeSearchText = (searchText) => {
-  return {
-    type: 'CHANGE_SEARCH_TEXT',
-    searchText
-  };
-}
-
-// Todo reducers and action generators
-let todoId = 1;
-const todosReducer = (state = [], action) => {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return [
-        ...state,
-        {
-          id: todoId++,
-          text: action.text,
-          completed: false,
-          createdAt: moment().unix(),
-          completedAt: undefined
-        }
-      ];
-    case 'REMOVE_TODO':
-      return state.filter((todo) => todo.id !== action.id)
-    default:
-      return state;
-  }
-}
-
-const addTodo = (text) => {
-  return {
-    type: 'ADD_TODO',
-    text
-  };
-};
-
-const removeTodo = (id) => {
-  return {
-    type: 'REMOVE_TODO',
-    id
-  }
-};
-
-// Map reducers and action generators
-
-const mapReducer = ( state = { isFething: false, url: undefined }, action) => {
-  switch(action.type) {
-    case 'START_LOCATION_FETCH':
-      return {
-        isFething: true,
-        url: undefined
-      };
-    case 'COMPLETE_LOCATION_FETCH': 
-      return {
-        isFething: false,
-        url: action.url
-      };
-    default:
-      return state; 
-  }
-}
-
-const startLocationFetch = () => {
-  return {
-    type: 'START_LOCATION_FETCH'
-  };
-}
-
-const completeLocationFetch = (url) => {
-  return {
-    type: 'COMPLETE_LOCATION_FETCH',
-    url
-  };
-}
-
-const fetchLocation = () => {
-  store.dispatch(startLocationFetch());
-
-  axios.get('http://ipinfo.io').then((response) => {
-    const loc = response.data.loc;
-    const baseUrl = `http://maps.google.com?q=${loc}`;
-
-    store.dispatch(completeLocationFetch(baseUrl));
-  })
-}
-
-const reducer = redux.combineReducers({
-  searchText: searchReducer,
-  todos: todosReducer,
-  map: mapReducer,
-})
-
-const store = redux.createStore(reducer, redux.compose(
-  window.devToolsExtension ? window.devToolsExtension() : f => f
-));
+const store = configure();
 
 // Subscribe to changes
 const unsubscribe = store.subscribe(() => {
@@ -130,16 +25,16 @@ const unsubscribe = store.subscribe(() => {
 
 console.log('currentState', store.getState());
 
-fetchLocation();
+store.dispatch(actions.fetchLocation());
 
-store.dispatch(changeSearchText('work'));
+store.dispatch(actions.changeSearchText('work'));
 
-store.dispatch(addTodo('Test add todo'))
+store.dispatch(actions.addTodo('Test add todo'))
 
-store.dispatch(addTodo('Test one more todo'));
+store.dispatch(actions.addTodo('Test one more todo'));
 
-store.dispatch(changeSearchText('dog'));
+store.dispatch(actions.changeSearchText('dog'));
 
-store.dispatch(changeSearchText('Something else'));
+store.dispatch(actions.changeSearchText('Something else'));
 
-store.dispatch(removeTodo(1));
+store.dispatch(actions.removeTodo(1));
