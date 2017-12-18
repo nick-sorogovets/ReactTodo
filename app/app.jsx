@@ -14,3 +14,5 @@ ReactDOM.render(
   <TodoApp/>,
   document.getElementById('app')
 );
+
+import './redux-todo-example';
